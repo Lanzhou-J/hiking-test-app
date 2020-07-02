@@ -1,13 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Trail, type: :model do
-  subject {
-    Trail.new(
-      name: 'Test Trail',
-      distance: 100,
-      difficulty: 3
-    )
-  }
+  subject {build(:trail)}
   context 'validations' do
     it 'is valid with valid attributes' do
       expect(subject).to be_valid
