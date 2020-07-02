@@ -12,4 +12,10 @@ RSpec.describe Trail, type: :model do
       expect(subject).to_not be_valid
     end
   end
+
+  context 'associations' do
+    it 'has many FacilityTrails' do
+      
+    end
+  end
 end
