@@ -71,9 +71,55 @@ RSpec.describe "Trails", type: :request do
   describe "DELETE #destroy" do
     before(:example) do
       # Arrange
-      @first_trail = create(:trail)
-      @last_trail = create(:trail)
-      delete 'trails/2'
+      @trail1 = create(:trail)
+      @trail2 = create(:trail)
+      # p Trail.all
+      delete "/trails/#{@trail1.id}"
+    end
+
+    it 'has a http no content response status' do
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it 'deletes the Trail from the database' do
+      expect(Trail.count).to eq(1)
+    end
+  end
+
+  describe "PUT #update" do
+    context 'when the params are valid' do
+
+      before(:example) do
+        # Arrange
+        @trail1 = create(:trail)
+        @updated_name = "Updated Trail"
+        put "/trails/#{@trail1.id}", params: { trail: { name: @updated_name} }
+        p @trail1
+      end
+
+      it 'returns a http no content response status' do
+        expect(response).to have_http_status(:no_content)
+      end
+
+      it 'update the trail attributes information in the database' do
+        expect(Trail.find(@trail1.id).name).to eq("Updated Trail")
+      end
+    end
+
+    context 'when the params are invalid' do
+      before(:example) do
+        @trail = create(:trail)
+        put "/trails/#{@trail.id}", params: {trail:{name:nil}}
+        @json_response = JSON.parse(response.body)
+      end
+
+      it 'returns a unprocessable entity response' do
+        expect((response)).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'has the correct number of errors' do
+        expect(@json_response['errors'].count).to eq(2)
+      end
     end
   end
 
